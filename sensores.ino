@@ -5,43 +5,44 @@
 
 DHT dht(DHTPIN, DHTTYPE);
 
-void verificarTemperaturaEumidade() {
+#define SENSOR_GAS_PIN 2
 
+void inicializaSensores() {
+  pinMode(SENSOR_GAS_PIN, INPUT);
   dht.begin();  // Inicia o sensor DHT
+}
 
-  float t = dht.readTemperature();  // Lê a temperatura em Celsius
-  float u = dht.readHumidity();     // Lê a umidade relativa
+void verificarTemperatura() {
+  float temperatura = dht.readTemperature();  // Lê a temperatura em Celsius
 
-  // Verifica se houve erro nas leituras
-  if (isnan(t) || isnan(u)) {
-
-    enviaDadosESP("temperatura", "Erro Sensor");
-    delay(150);
-    enviaDadosESP("umidade", "Erro Sensor");
-    delay(150);
+  if (isnan(temperatura)) {
+    enviaDadosESP("Temperatura", "Erro Sensor");
     return;
   }
 
-  // Converter valores para String
-  String temperatura = String(t, 1) + " °C";  // 1 indica uma casa decimal
-  String umidade = String((int)u) + " %";
+  char tempStr[10];
+  dtostrf(temperatura, 4, 1, tempStr);  // Converte temperatura para string
 
-  // Envia dados para o site
-  enviaDadosESP("temperatura", temperatura);
-  delay(150);
-  enviaDadosESP("umidade", umidade);
-  delay(150);
-
-  //Serial.println("Temperatura: " + temperatura);
-  //Serial.println("Umidade: " + umidade);
+  enviaDadosESP("Temperatura", tempStr);
 }
 
-#define sensorGas 2
+
+void verificarUmidade() {
+  float umidade = dht.readHumidity();  // Lê a umidade relativa
+
+  if (isnan(umidade)) {
+    enviaDadosESP("Umidade", "Erro Sensor");
+    return;
+  }
+
+  char umidStr[10];
+  itoa((int)umidade, umidStr, 10);  // Converte umidade para string
+
+  enviaDadosESP("Umidade", umidStr);
+}
 
 void sensorGasEfumaca() {
+  bool valorGasEfumaca = !digitalRead(SENSOR_GAS_PIN);
 
-  pinMode(sensorGas, INPUT);
-
-  bool gas = !digitalRead(sensorGas);
-
+  enviaDadosESP("Gás e Fumaça", valorGasEfumaca ? "1" : "0");
 }
