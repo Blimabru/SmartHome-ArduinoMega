@@ -8,12 +8,15 @@ void iniciaDisplay() {
   lcd.begin(16, 2);
   lcd.init();
 
+  //animacaoInicial();
   msgInicial();
 }
 
-void msgInicial() {
+void animacaoInicial() {
 
   int tempoAnimacaoPontinhos = 100;
+
+  lcd.clear();
 
   lcd.clear();
   lcd.setBacklight(HIGH);
@@ -32,6 +35,12 @@ void msgInicial() {
     lcd.print(".");
     delay(tempoAnimacaoPontinhos);
   }
+}
+
+void msgInicial() {
+
+  lcd.clear();
+  lcd.setBacklight(HIGH);
 
   piscaLcd();
 
@@ -45,7 +54,6 @@ void msgInicial() {
 
   lcd.setCursor(0, 1);
   lcd.print("    Versao 2    ");
-  delay(1000);
 
   piscaLcd();
 
