@@ -1,41 +1,42 @@
-#define led1  22
-#define led2  23
-#define led3  24
-#define led4  25
-#define led5  26
-#define led6  27
-#define led7  28
-#define led8  29
-#define led9  30
-#define led10 31
+#define NUM_DISPOSITIVOS 15
 
-void controleDispositivos(String dispositivo, String estado) {
+const int leds[NUM_DISPOSITIVOS] = { 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 };
+const char* dispositivos[NUM_DISPOSITIVOS] = {
+  "luz-cantina",
+  "luz-andar00-sala01",
+  "luz-andar00-sala02",
+  "luz-banheiro-masculino",
+  "luz-banheiro-feminino",
+  "luz-hall",
+  "luz-apartamento",
+  "luz-andar01-sala01",
+  "luz-area-circulacao",
+  "luz-cozinha",
+  "luz-area-servico",
+  "luz-suite",
+  "luz-banheiro-suite",
+  "luz-banheiro-social",
+  "luz-estufa"
+};
 
-  pinMode(led1, OUTPUT);
-  pinMode(led2, OUTPUT);
+bool estadosDispositivos[NUM_DISPOSITIVOS] = { false }; // Armazena o estado atual de cada dispositivo
 
-  if (dispositivo == "luz-andar00-sala01") {
+void configuraPinos() {
+  for (int i = 0; i < NUM_DISPOSITIVOS; i++) {
+    pinMode(leds[i], OUTPUT);
+    digitalWrite(leds[i], LOW); // Inicializa todos os LEDs como desligados
+  }
+}
 
-    if (estado == "1") {
-
-      digitalWrite(led1, HIGH);
-
-    } else if (estado == "0") {
-
-      digitalWrite(led1, LOW);
+void controleDispositivos(const char* dispositivo, const char* estado) {
+  for (int i = 0; i < NUM_DISPOSITIVOS; i++) {
+    if (strcmp(dispositivo, dispositivos[i]) == 0) {
+      bool novoEstado = (estado[0] == '1');
+      if (estadosDispositivos[i] != novoEstado) {
+        digitalWrite(leds[i], novoEstado ? HIGH : LOW);
+        estadosDispositivos[i] = novoEstado; // Atualiza o estado atual
+      }
+      break;
     }
   }
-
-  if (dispositivo == "luz-andar00-sala02") {
-
-    if (estado == "1") {
-
-      digitalWrite(led2, HIGH);
-
-    } else if (estado == "0") {
-      
-      digitalWrite(led2, LOW);
-    }
-  }
-
 }
