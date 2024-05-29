@@ -38,8 +38,6 @@ void recebeDadosESP() {
 void processaDadosRecebidos(char* dados) {
   String dadosStr(dados);
 
-  Serial.println(dados);
-
   // Encontra os índices do nome do dispositivo e do estado na mensagem
   int idxInicioNome = dadosStr.indexOf("\"") + 1;
   int idxFimNome = dadosStr.indexOf("\":", idxInicioNome);
@@ -48,12 +46,21 @@ void processaDadosRecebidos(char* dados) {
 
   String operacao = dadosStr.substring(idxInicioNome, idxFimNome);
   String valor = dadosStr.substring(idxInicioValor, idxFimValor);
-  bool enviado = "false";
 
-  // Passa os valores extraídos para a função controleDispositivos
-  if (operacao != "message") {
-    controleDispositivos(operacao.c_str(), valor.c_str());
+  if ((operacao == "Temperatura") && (valor == "Ok")) {
+
+    envioTemperatura = true;
+
+  } else if ((operacao == "Umidade") && (valor == "Ok")) {
+
+    envioUmidade = true;
+
+  } else if ((operacao == "Gás e Fumaça") && (valor == "Ok")) {
+
+    envioGasEfumaca = true;
+
   } else {
-    Serial.println("Mensagem do sistema\n");
+    // Processa os dispositivos conforme a lógica original
+    controleDispositivos(operacao.c_str(), valor.c_str());
   }
 }
